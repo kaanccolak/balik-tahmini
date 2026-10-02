@@ -175,15 +175,18 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
   #arama-wrap{display:none !important}
   #arama-panel{display:none !important}
   /* Panel */
-  #side{width:100%;flex:1;min-height:0;border-left:none;border-top:2px solid var(--accent);transition:flex .3s ease}
-  #side.collapsed{flex:0 0 44px;overflow:hidden}
-  #side-body{padding:12px 14px 16px;flex:1;overflow-y:auto}
-  #side-header{padding:10px 14px 8px}
+  #side{width:100%;flex:1;min-height:0;border-left:none;border-top:2px solid var(--accent);transition:flex .3s ease;display:flex;flex-direction:column;overflow:hidden}
+  #side.collapsed{flex:0 0 44px}
+  #side.collapsed #side-header,
+  #side.collapsed #side-body,
+  #side.collapsed #tahmin-btn{display:none}
+  #side-body{padding:12px 14px 8px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  #side-header{padding:10px 14px 8px;flex-shrink:0}
   #side-header h1{font-size:17px}
   #bolge-text{font-size:13px !important}
   #coord-text{font-size:11px}
-  /* Tahmin butonu panelin altında sabit */
-  #tahmin-btn{flex-shrink:0;border-radius:0;padding:14px;width:100%;position:relative;z-index:50}
+  /* Tahmin butonu en altta sabit */
+  #tahmin-btn{flex-shrink:0;border-radius:0;padding:14px;width:100%;z-index:50}
   /* Grid'ler */
   #balik-grid{grid-template-columns:repeat(4,1fr);gap:6px}
   .balik-btn{padding:8px 4px 6px;font-size:11px}
