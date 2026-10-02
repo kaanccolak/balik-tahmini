@@ -172,7 +172,9 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
   #map-wrap{height:38vh;flex:none;transition:height .3s ease}
   #map-wrap.expanded{height:88vh}
   #ruzgar-widget{display:none !important} /* Masaüstü widget mobilde gizle */
-  #arama-wrap{width:calc(100% - 80px);left:50%;transform:translateX(-50%)}
+  #arama-wrap{position:static;transform:none;width:100%;left:auto;margin-bottom:4px}
+  #arama-input{border-radius:10px;font-size:14px;padding:10px 14px}
+  #arama-sonuclar{border-radius:10px}
   /* Panel */
   #side{width:100%;flex:1;min-height:0;border-left:none;border-top:2px solid var(--accent);transition:flex .3s ease}
   #side.collapsed{flex:0 0 44px;overflow:hidden}
@@ -249,6 +251,10 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
     <h1>🎣 Balık Tahmini</h1>
     <div id="bolge-text" style="font-size:15px;font-weight:600;color:var(--text1);margin-top:4px"></div>
     <div id="coord-text">Haritadan nokta seç</div>
+  </div>
+  <div id="arama-panel" style="padding:8px 14px 0;flex-shrink:0;display:none">
+    <input id="arama-input-panel" type="text" placeholder="🔍 Bölge ara... (İzmir, Karşıyaka...)" autocomplete="off" style="width:100%;padding:10px 14px;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;color:var(--text1);font-size:14px;font-weight:500;outline:none"/>
+    <div id="arama-sonuclar-panel" style="background:rgba(13,21,38,0.98);border:1px solid var(--border);border-radius:10px;margin-top:4px;overflow:hidden;display:none"></div>
   </div>
   <div id="side-body">
     <div>
@@ -463,6 +469,37 @@ function kontrolEt(){
 }
 
 balikGridDoldur();gunRowDoldur();saatRowDoldur();aramaKurulum();
+
+// Mobilde panel arama kutusunu göster
+if(window.innerWidth<=768){
+  document.getElementById('arama-panel').style.display='block';
+  // Panel arama input'unu harita arama gibi çalıştır
+  const pinput=document.getElementById('arama-input-panel');
+  const psonuclar=document.getElementById('arama-sonuclar-panel');
+  let ptimeout=null;
+  pinput.addEventListener('input',()=>{
+    clearTimeout(ptimeout);
+    const q=pinput.value.trim();
+    if(q.length<2){psonuclar.style.display='none';return;}
+    ptimeout=setTimeout(()=>{
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=tr&countrycodes=tr`,{headers:{'User-Agent':'balik-tahmini-app'}})
+      .then(r=>r.json())
+      .then(data=>{
+        if(!data.length){psonuclar.style.display='none';return;}
+        psonuclar.innerHTML=data.map(d=>`<div class="arama-item" data-lat="${d.lat}" data-lon="${d.lon}">📍 ${d.display_name.split(',').slice(0,3).join(',')}</div>`).join('');
+        psonuclar.style.display='block';
+        psonuclar.querySelectorAll('.arama-item').forEach(el=>{
+          el.onclick=()=>{
+            map.setView([+el.dataset.lat,+el.dataset.lon],13);
+            pinput.value=el.textContent.trim().replace('📍 ','');
+            psonuclar.style.display='none';
+            pinput.blur();
+          };
+        });
+      }).catch(()=>{psonuclar.style.display='none';});
+    },400);
+  });
+}
 
 let panelAcik = true;
 function togglePanel(){
