@@ -2,8 +2,25 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Balık Tahmini</title>
+<meta name="description" content="Ege kıyısı balık avı tahmin uygulaması">
+<meta name="theme-color" content="#070d1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Balık Tahmini">
+<link rel="manifest" href="data:application/json,{
+  %22name%22:%22Bal%C4%B1k%20Tahmini%22,
+  %22short_name%22:%22Bal%C4%B1k%22,
+  %22description%22:%22Ege%20k%C4%B1y%C4%B1s%C4%B1%20bal%C4%B1k%20av%C4%B1%20tahmin%22,
+  %22start_url%22:%22.%22,
+  %22display%22:%22standalone%22,
+  %22background_color%22:%22%23070d1a%22,
+  %22theme_color%22:%22%23070d1a%22,
+  %22orientation%22:%22landscape%22,
+  %22icons%22:[{%22src%22:%22https://raw.githubusercontent.com/kaanccolak/balik-tahmini/main/icon.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]
+}">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -141,6 +158,22 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
 
 /* Marker */
 .marker-pin{width:14px;height:14px;background:var(--accent);border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 4px rgba(56,189,248,.2),0 2px 12px rgba(56,189,248,.5)}
+
+/* Mobil: dikey düzen */
+@media (max-width:768px){
+  body{flex-direction:column}
+  #map-wrap{height:45vh;flex:none}
+  #side{width:100%;height:55vh;border-left:none;border-top:1px solid var(--border)}
+  #arama-wrap{width:calc(100% - 120px);left:50%;transform:translateX(-50%)}
+  #ruzgar-widget{top:8px;right:8px;padding:10px 12px}
+  .rw-hz{font-size:22px}
+  #side-header{padding:14px 16px 10px}
+  #side-header h1{font-size:18px}
+  #side-body{padding:12px}
+  .kosul-grid{grid-template-columns:1fr 1fr}
+  #balik-grid{grid-template-columns:repeat(4,1fr)}
+  #gun-grid{grid-template-columns:repeat(4,1fr)}
+}
 /* Popup */
 .balik-popup .leaflet-popup-content-wrapper{background:#0d1526;border:1px solid #1e2f4a;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);padding:0}
 .balik-popup .leaflet-popup-content{margin:12px 14px;line-height:1.4}
