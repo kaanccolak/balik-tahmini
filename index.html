@@ -111,7 +111,7 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
 .hour-card.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 12px rgba(56,189,248,.3)}
 
 /* Tahmin butonu */
-#tahmin-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent) 0%,#818cf8 100%);color:#fff;border:none;border-radius:16px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:all .2s;box-shadow:0 4px 24px rgba(56,189,248,.25)}
+#tahmin-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent) 0%,#818cf8 100%);color:#fff;border:none;border-radius:16px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.01em;transition:all .2s;box-shadow:0 4px 24px rgba(56,189,248,.25);display:block}
 #tahmin-btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
 #tahmin-btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(56,189,248,.35)}
 #tahmin-btn:not(:disabled):active{transform:scale(.98)}
@@ -178,15 +178,15 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
   #side{width:100%;flex:1;min-height:0;border-left:none;border-top:2px solid var(--accent);transition:flex .3s ease;display:flex;flex-direction:column;overflow:hidden}
   #side.collapsed{flex:0 0 44px}
   #side.collapsed #side-header,
-  #side.collapsed #side-body,
-  #side.collapsed #tahmin-btn{display:none}
+  #side.collapsed #side-body{display:none}
   #side-body{padding:12px 14px 8px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
   #side-header{padding:10px 14px 8px;flex-shrink:0}
   #side-header h1{font-size:17px}
   #bolge-text{font-size:13px !important}
   #coord-text{font-size:11px}
-  /* Tahmin butonu en altta sabit */
-  #tahmin-btn{flex-shrink:0;border-radius:0;padding:14px;width:100%;z-index:50}
+  /* Tahmin butonu mobilde fixed - her zaman görünür */
+  #tahmin-btn{position:fixed;bottom:0;left:0;right:0;border-radius:0;padding:16px;width:100%;z-index:200;box-shadow:0 -2px 12px rgba(0,0,0,.3)}
+  #side-body{padding-bottom:70px}
   /* Grid'ler */
   #balik-grid{grid-template-columns:repeat(4,1fr);gap:6px}
   .balik-btn{padding:8px 4px 6px;font-size:11px}
@@ -279,9 +279,9 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
       <div class="slabel">Saat</div>
       <div id="saat-gruplar"></div>
     </div>
+    <button id="tahmin-btn" onclick="tahminEt()" disabled>🎣 Tahmin Et</button>
     <div id="results"></div>
   </div>
-  <button id="tahmin-btn" onclick="tahminEt()" disabled>🎣 Tahmin Et</button>
 </div>
 
 <script>
