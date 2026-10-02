@@ -462,17 +462,7 @@ function togglePanel(){
   setTimeout(()=>map.invalidateSize(), 350);
 }
 
-// Swipe aşağı panel kapat, swipe yukarı aç
-(function(){
-  let startY=0, startPanelAcik=true;
-  const side=document.getElementById('side');
-  side.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;startPanelAcik=panelAcik;},{passive:true});
-  side.addEventListener('touchend',e=>{
-    const diff=e.changedTouches[0].clientY-startY;
-    if(diff>60&&startPanelAcik) togglePanel();
-    else if(diff<-60&&!startPanelAcik) togglePanel();
-  },{passive:true});
-})();
+
 
 function aramaKurulum(){
   const input=document.getElementById('arama-input');
