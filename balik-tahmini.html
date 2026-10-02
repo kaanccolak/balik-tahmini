@@ -159,20 +159,34 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
 /* Marker */
 .marker-pin{width:14px;height:14px;background:var(--accent);border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 4px rgba(56,189,248,.2),0 2px 12px rgba(56,189,248,.5)}
 
+/* Mobil handle */
+#mobile-handle{display:none;padding:8px 0 4px;text-align:center;cursor:pointer;flex-shrink:0;background:var(--bg1);border-bottom:1px solid var(--border)}
+#mobile-handle-bar{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 4px}
+#mobile-handle-text{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.05em}
+
 /* Mobil: dikey düzen */
 @media (max-width:768px){
   body{flex-direction:column}
-  #map-wrap{height:45vh;flex:none}
-  #side{width:100%;height:55vh;border-left:none;border-top:1px solid var(--border)}
-  #arama-wrap{width:calc(100% - 120px);left:50%;transform:translateX(-50%)}
-  #ruzgar-widget{top:8px;right:8px;padding:10px 12px}
-  .rw-hz{font-size:22px}
-  #side-header{padding:14px 16px 10px}
+  #mobile-handle{display:block}
+  #map-wrap{height:40vh;flex:none;transition:height .3s ease}
+  #map-wrap.expanded{height:85vh}
+  #side{width:100%;flex:1;border-left:none;border-top:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:flex .3s ease}
+  #side.collapsed{flex:0;min-height:48px}
+  #side.collapsed #side-header,
+  #side.collapsed #side-body{display:none}
+  #side-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+  #arama-wrap{width:calc(100% - 100px);left:50%;transform:translateX(-50%)}
+  #ruzgar-widget{top:8px;right:8px;padding:8px 10px;z-index:1200;min-width:90px}
+  .rw-hz{font-size:20px}
+  .rw-label{font-size:9px}
+  .rw-yon{font-size:11px}
+  #side-header{padding:12px 16px 10px;flex-shrink:0}
   #side-header h1{font-size:18px}
-  #side-body{padding:12px}
+  #tahmin-btn{position:sticky;bottom:0;z-index:100;border-radius:0;margin:0 -18px;width:calc(100% + 36px)}
   .kosul-grid{grid-template-columns:1fr 1fr}
   #balik-grid{grid-template-columns:repeat(4,1fr)}
   #gun-grid{grid-template-columns:repeat(4,1fr)}
+  .saat-grid{grid-template-columns:repeat(4,1fr)}
 }
 /* Popup */
 .balik-popup .leaflet-popup-content-wrapper{background:#0d1526;border:1px solid #1e2f4a;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);padding:0}
@@ -206,6 +220,10 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
 
 <!-- Sağ: Panel -->
 <div id="side">
+  <div id="mobile-handle" onclick="togglePanel()">
+    <div id="mobile-handle-bar"></div>
+    <span id="mobile-handle-text">▾ Kaydır</span>
+  </div>
   <div id="side-header">
     <h1>🎣 Balık Tahmini</h1>
     <div id="bolge-text" style="font-size:15px;font-weight:600;color:var(--text1);margin-top:4px"></div>
@@ -424,6 +442,37 @@ function kontrolEt(){
 }
 
 balikGridDoldur();gunRowDoldur();saatRowDoldur();aramaKurulum();
+
+let panelAcik = true;
+function togglePanel(){
+  const side = document.getElementById('side');
+  const mapWrap = document.getElementById('map-wrap');
+  const handleText = document.getElementById('mobile-handle-text');
+  panelAcik = !panelAcik;
+  if(panelAcik){
+    side.classList.remove('collapsed');
+    mapWrap.classList.remove('expanded');
+    handleText.textContent = '▾ Kaydır';
+  } else {
+    side.classList.add('collapsed');
+    mapWrap.classList.add('expanded');
+    handleText.textContent = '▴ Aç';
+  }
+  // Haritayı yeniden boyutlandır
+  setTimeout(()=>map.invalidateSize(), 350);
+}
+
+// Swipe aşağı panel kapat, swipe yukarı aç
+(function(){
+  let startY=0, startPanelAcik=true;
+  const side=document.getElementById('side');
+  side.addEventListener('touchstart',e=>{startY=e.touches[0].clientY;startPanelAcik=panelAcik;},{passive:true});
+  side.addEventListener('touchend',e=>{
+    const diff=e.changedTouches[0].clientY-startY;
+    if(diff>60&&startPanelAcik) togglePanel();
+    else if(diff<-60&&!startPanelAcik) togglePanel();
+  },{passive:true});
+})();
 
 function aramaKurulum(){
   const input=document.getElementById('arama-input');
