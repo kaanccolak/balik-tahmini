@@ -176,13 +176,13 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
   /* Panel */
   #side{width:100%;flex:1;min-height:0;border-left:none;border-top:2px solid var(--accent);transition:flex .3s ease}
   #side.collapsed{flex:0 0 44px;overflow:hidden}
-  #side-body{padding:12px 14px 72px}
+  #side-body{padding:12px 14px 16px;flex:1;overflow-y:auto}
   #side-header{padding:10px 14px 8px}
   #side-header h1{font-size:17px}
   #bolge-text{font-size:13px !important}
   #coord-text{font-size:11px}
-  /* Tahmin butonu sticky */
-  #tahmin-btn{position:sticky;bottom:0;z-index:50;border-radius:0;margin:8px -14px -72px;width:calc(100% + 28px);padding:14px}
+  /* Tahmin butonu panelin altında sabit */
+  #tahmin-btn{flex-shrink:0;border-radius:0;padding:14px;width:100%;position:relative;z-index:50}
   /* Grid'ler */
   #balik-grid{grid-template-columns:repeat(4,1fr);gap:6px}
   .balik-btn{padding:8px 4px 6px;font-size:11px}
@@ -271,18 +271,9 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
       <div class="slabel">Saat</div>
       <div id="saat-gruplar"></div>
     </div>
-    <button id="tahmin-btn" onclick="tahminEt()" disabled>🎣 Tahmin Et</button>
-    <div id="ruzgar-panel" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;flex-direction:row;align-items:center;gap:14px">
-      <span id="ruzgar-panel-ok" style="font-size:28px;transition:transform .6s ease">↑</span>
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Rüzgar</div>
-        <div style="font-size:22px;font-weight:900;color:var(--text1);line-height:1"><span id="ruzgar-panel-hz">—</span><span style="font-size:13px;color:var(--text3);font-weight:600"> km/h</span></div>
-        <div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:3px" id="ruzgar-panel-yon">—</div>
-      </div>
-      <div id="ruzgar-panel-durum" style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;margin-left:auto">—</div>
-    </div>
     <div id="results"></div>
   </div>
+  <button id="tahmin-btn" onclick="tahminEt()" disabled>🎣 Tahmin Et</button>
 </div>
 
 <script>
@@ -641,14 +632,8 @@ function gosterRuzgar(hz,yon){
   const d=document.getElementById('rw-durum');
   d.textContent=dur.ad;d.className='rw-durum '+dur.cls;
 
-  // Panel içi widget (mobil)
-  const rp=document.getElementById('ruzgar-panel');
-  rp.style.display='flex';
-  document.getElementById('ruzgar-panel-hz').textContent=Math.round(hz);
-  document.getElementById('ruzgar-panel-yon').textContent=ynAd(yon)+' · '+Math.round(yon)+'°';
-  document.getElementById('ruzgar-panel-ok').style.transform=`rotate(${yon}deg)`;
-  const dpd=document.getElementById('ruzgar-panel-durum');
-  dpd.textContent=dur.ad;dpd.className='rw-durum '+dur.cls;
+  // Panel içi rüzgar state'e kaydet, sonuç HTML'inde gösterilecek
+  window._ruzgarState={hz:Math.round(hz),yon:ynAd(yon)+' · '+Math.round(yon)+'°',dur,rotasyon:yon};
 }
 
 async function hesaplaTahmin({lat,lon,tarih,saat}){
@@ -852,7 +837,19 @@ async function tahminEt(){
         .join('; ')+'.';
     }
 
-    let html=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+    // Mobil rüzgar kartı
+    const rs=window._ruzgarState||{};
+    const ruzgarHtml=rs.hz!=null?`<div style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px">
+      <span style="font-size:26px;display:block;transform:rotate(${rs.rotasyon}deg)"">↑</span>
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px">Rüzgar</div>
+        <div style="font-size:20px;font-weight:900;color:var(--text1);line-height:1">${rs.hz}<span style="font-size:12px;color:var(--text3);font-weight:600"> km/h</span></div>
+        <div style="font-size:12px;color:var(--text2);font-weight:600;margin-top:2px">${rs.yon}</div>
+      </div>
+      <div class="rw-durum ${rs.dur?.cls||''}">${rs.dur?.ad||''}</div>
+    </div>`:'';
+
+    let html=ruzgarHtml+`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
       <div style="flex:1;height:1px;background:var(--accent);opacity:.3"></div>
       <div style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em">Tahmin · ${debug.dilim}</div>
       <div style="flex:1;height:1px;background:var(--accent);opacity:.3"></div>
