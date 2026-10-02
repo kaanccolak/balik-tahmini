@@ -166,30 +166,48 @@ body{font-family:'SF Pro Display',system-ui,sans-serif;background:var(--bg0);col
 
 /* Mobil: dikey düzen */
 @media (max-width:768px){
-  body{flex-direction:column}
+  body{flex-direction:column;overflow:hidden}
+  /* Harita */
   #mobile-handle{display:block}
-  #map-wrap{height:40vh;flex:none;transition:height .3s ease}
-  #map-wrap.expanded{height:85vh}
-  #side{width:100%;flex:1;border-left:none;border-top:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:flex .3s ease}
-  #side.collapsed{flex:0;min-height:48px}
-  #side.collapsed #side-header,
-  #side.collapsed #side-body{display:none}
-  #side-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
-  #arama-wrap{width:calc(100% - 100px);left:50%;transform:translateX(-50%)}
-  #ruzgar-widget{position:static;display:none;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px;flex-direction:row;align-items:center;gap:14px;text-align:left;min-width:unset;backdrop-filter:none}
-  #ruzgar-widget.mobil-goster{display:flex !important}
-  #ruzgar-ok{font-size:28px;margin:0}
-  .rw-hz{font-size:22px}
-  .rw-label{margin-bottom:2px}
-  .rw-yon{margin-top:2px}
-  #rw-durum{margin-top:4px}
-  #side-header{padding:12px 16px 10px;flex-shrink:0}
-  #side-header h1{font-size:18px}
-  #tahmin-btn{position:sticky;bottom:0;z-index:100;border-radius:0;margin:0 -18px;width:calc(100% + 36px)}
-  .kosul-grid{grid-template-columns:1fr 1fr}
-  #balik-grid{grid-template-columns:repeat(4,1fr)}
-  #gun-grid{grid-template-columns:repeat(4,1fr)}
-  .saat-grid{grid-template-columns:repeat(4,1fr)}
+  #map-wrap{height:38vh;flex:none;transition:height .3s ease}
+  #map-wrap.expanded{height:88vh}
+  #ruzgar-widget{display:none !important} /* Masaüstü widget mobilde gizle */
+  #arama-wrap{width:calc(100% - 80px);left:50%;transform:translateX(-50%)}
+  /* Panel */
+  #side{width:100%;flex:1;min-height:0;border-left:none;border-top:2px solid var(--accent);transition:flex .3s ease}
+  #side.collapsed{flex:0 0 44px;overflow:hidden}
+  #side-body{padding:12px 14px 72px}
+  #side-header{padding:10px 14px 8px}
+  #side-header h1{font-size:17px}
+  #bolge-text{font-size:13px !important}
+  #coord-text{font-size:11px}
+  /* Tahmin butonu sticky */
+  #tahmin-btn{position:sticky;bottom:0;z-index:50;border-radius:0;margin:8px -14px -72px;width:calc(100% + 28px);padding:14px}
+  /* Grid'ler */
+  #balik-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .balik-btn{padding:8px 4px 6px;font-size:11px}
+  .balik-btn .bb-emoji{font-size:18px}
+  #gun-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .day-card{padding:8px 6px 6px}
+  .day-card .dd{font-size:20px}
+  .day-card .dn{font-size:10px}
+  .saat-grup-baslik{font-size:10px}
+  .saat-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .hour-card{padding:9px 4px;font-size:13px}
+  /* Sonuç kartları mobil */
+  .result-card{padding:12px}
+  .tur-name{font-size:16px}
+  .skor-num{font-size:22px}
+  .tur-not{font-size:12px}
+  .kc-val{font-size:22px}
+  .kc-sub{font-size:12px}
+  .kosul-grid{gap:6px}
+  /* Rüzgar panel widget */
+  #ruzgar-panel{gap:10px;padding:10px 12px}
+  .slabel{font-size:11px}
+  #guven-bar{padding:10px 12px}
+  #guven-baslik{font-size:13px}
+  #guven-acik{font-size:11px}
 }
 /* Popup */
 .balik-popup .leaflet-popup-content-wrapper{background:#0d1526;border:1px solid #1e2f4a;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5);padding:0}
